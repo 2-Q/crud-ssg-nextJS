@@ -1,23 +1,23 @@
-import React,{ useState } from "react"
+import React, { useState } from "react"
 import Router from 'next/router';
 import { authPage } from "../../midlewares/authorizationPage"
 
-export async function getServerSideProps(ctx){
-    const {token} = await authPage(ctx)
-    return {props: { token: token }}
+export async function getServerSideProps(ctx) {
+    const { token } = await authPage(ctx)
+    return { props: { token: token } }
 }
 
 
 
-export default function createPost(props){
+export default function CreatePost(props) {
     const [fields, setField] = useState({
         title: '',
         content: ''
     })
 
     const [status, setStatus] = useState('normal')
-    
-    function fieldHandler(e){
+
+    function fieldHandler(e) {
         const name = e.target.getAttribute('name');
         setField({
             ...fields,
@@ -25,19 +25,19 @@ export default function createPost(props){
         })
     }
 
-    async function createHandler(e){
+    async function createHandler(e) {
         e.preventDefault()
         setStatus('loading')
-        const Res=await fetch('/api/post/create', {
+        const Res = await fetch('/api/post/create', {
             method: "POST",
             body: JSON.stringify(fields),
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": "Bearer "+props.token
+                "Authorization": "Bearer " + props.token
             }
         })
-        
-        if(!Res.ok) return setStatus('error' + Res.status)
+
+        if (!Res.ok) return setStatus('error' + Res.status)
 
         const loginRes = await Res.json()
 
@@ -51,11 +51,11 @@ export default function createPost(props){
         <div>
             <h3>Create Post</h3>
             <form onSubmit={createHandler.bind(this)}>
-                <input onChange={fieldHandler.bind(this)} type="text" placeholder="title" name="title"/><br/>
-                <textarea onChange={fieldHandler.bind(this)} placeholder="content" name="content"></textarea><br/>
+                <input onChange={fieldHandler.bind(this)} type="text" placeholder="title" name="title" /><br />
+                <textarea onChange={fieldHandler.bind(this)} placeholder="content" name="content"></textarea><br />
                 <button type="submit">Submit</button>
             </form>
-            
+
             <div>Output: {status}</div>
         </div>
     )

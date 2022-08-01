@@ -19,7 +19,7 @@ export async function getServerSideProps(ctx){
     }}
 }
 
-export default function detailPost(props){
+export default function DetailPost(props){
     return (
         <div>
             <h3>Detail Post</h3>
